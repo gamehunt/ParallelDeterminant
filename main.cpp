@@ -106,20 +106,11 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& stream, const Mat& matrix) {
-        if(matrix.parent) {
-            for(int i = 0; i < matrix.parent->rows.size(); i++) {
-                for(int j = 0; j < matrix.parent->rows.size(); j++) {
-                    stream << matrix.parent->rows[i][j] << " ";
-                }
-                stream << "\n";
+        for(int i = 0; i < matrix.rows.size(); i++) {
+            for(int j = 0; j < matrix.rows.size(); j++) {
+                stream << matrix.get(i, j) << " ";
             }
-        } else {
-            for(int i = 0; i < matrix.rows.size(); i++) {
-                for(int j = 0; j < matrix.rows.size(); j++) {
-                    stream << matrix.rows[i][j] << " ";
-                }
-                stream << "\n";
-            }
+            stream << "\n";
         }
         return stream;
     }
@@ -150,7 +141,7 @@ public:
             std::vector<std::thread> threads;
             for(int i = 0; i < sz; i++) {
                 threads.emplace_back(
-                    std::thread([this, i, &r] {
+                    std::thread([this, i, sz, &r] {
                         int _r = (i % 2 ? -1 : 1) * get(i, 0) * minor(i, 0).det();
                         r.fetch_add(_r);
                     })
